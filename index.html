@@ -23,19 +23,27 @@
 <body>
 <div id="jwplayerDiv"></div>
 <script type="text/javascript">
-    // Prompt the user for the URL
-    var url = prompt("Please enter the URL:", "");
+    // Function to parse URL parameters
+    function getUrlParameter(name) {
+        name = name.replace(/[[]/, '\\[').replace(/[\]]/, '\\]');
+        var regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
+        var results = regex.exec(location.search);
+        return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
+    };
 
-    // Setup JWPlayer with the provided URL
-    if (url !== null) {
+    // Get the URL parameter 'v'
+    var urlParam = getUrlParameter('v');
+
+    // Check if URL contains '.m3u8'
+    if (urlParam && urlParam.indexOf('.m3u8') !== -1) {
         jwplayer("jwplayerDiv").setup({
-            file: url,
+            file: urlParam,
             position: 'bottom',
             type: "hls",
             playbackRateControls: [0.75, 1, 1.25, 1.5, 1.75, 2]
         });
-    } else {
-        alert("No URL provided. The player will not be set up.");
+    } else if (urlParam) {
+        window.location.href = urlParam; // Redirect to the provided URL
     }
 </script>
 </body>
